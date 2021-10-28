@@ -2,13 +2,38 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
+	"io/ioutil"
 	"os"
 
 	"github.com/google/subcommands"
 )
 
 const mappingFilePath string = ".gocart.map"
+
+type KeyValueStore struct {
+	path string
+}
+
+func (*KeyValueStore) Put(key, value string) error {
+	kvFile, err := ioutil.ReadFile(mappingFilePath)
+	if err != nil {
+		return err
+	}
+	var kvMap map[string]interface{}
+	json.Unmarshal([]byte(kvFile), &kvMap)
+	kvMap[key] = value
+	updatedKvFile, err := json.Marshal(kvMap)
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(mappingFilePath, updatedKvFile, 0640)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 type initCmd struct {
 }
@@ -67,6 +92,7 @@ func (cmd *removeCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface
 func (cmd *removeCmd) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&cmd.config_name, "config_name", "", "name of the config file to untrack")
 }
+
 func main() {
 	subcommands.Register(subcommands.HelpCommand(), "")
 	subcommands.Register(subcommands.FlagsCommand(), "")
