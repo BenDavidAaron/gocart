@@ -10,6 +10,17 @@ import (
 	"github.com/google/subcommands"
 )
 
+type ConfigSpec struct {
+	name     string
+	path     string
+	platform string
+}
+
+type GoCartState struct {
+	configs  []ConfigSpec
+	platform string
+}
+
 const mappingFilePath string = ".gocart.map"
 
 type KeyValueStore struct {
