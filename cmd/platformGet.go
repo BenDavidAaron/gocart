@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	gocart "github.com/bendavidaaron/gocart/internal"
 	"github.com/spf13/cobra"
@@ -31,7 +32,11 @@ var platformGetCmd = &cobra.Command{
     cobra platformGet  // bsd`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("platformGet called")
-		fmt.Println(gocart.GetPlatform())
+		platform, err := gocart.GetPlatform()
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(platform)
 
 	},
 }
