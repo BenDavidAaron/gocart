@@ -1,11 +1,8 @@
-module gocart
+module github.com/bendavidaaron/gocart
 
 go 1.15
 
 require (
-	github.com/bendavidaaron/gocart v0.0.0-20211030165947-8e8850e509c7
-	github.com/google/subcommands v1.2.0
-	internal/gocart v0.0.1
+	github.com/spf13/cobra v1.2.1
+	github.com/spf13/viper v1.9.0
 )
-
-replace internal/gocart => ./internal/gocart
