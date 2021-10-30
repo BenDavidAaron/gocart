@@ -25,13 +25,10 @@ import (
 // configGetCmd represents the configGet command
 var configGetCmd = &cobra.Command{
 	Use:   "configGet",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Get a config by name, or get all configs",
+	Long: `Get a config by name, skipping the name will Get all configs
+	cobra configGet vimrc //gets the vimrc mapping
+	cobra configGet       //gets all stored configs`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configGet called")
 	},

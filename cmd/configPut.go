@@ -25,13 +25,14 @@ import (
 // configPutCmd represents the configPut command
 var configPutCmd = &cobra.Command{
 	Use:   "configPut",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Put a Config File into the current gocart mapping",
+	Long: `Put a Config File into the current gocart mapping
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	this will create a file at the name specified in the gocart repo, 
+	copy the config file at the supplied path into the new file,
+	and then replace the old config file with a symlink to the new config file in the gocart repo
+
+    gocart configPut vimrc ~/.vimrc`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configPut called")
 	},

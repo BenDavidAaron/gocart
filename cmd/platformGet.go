@@ -25,13 +25,9 @@ import (
 // platformGetCmd represents the platformGet command
 var platformGetCmd = &cobra.Command{
 	Use:   "platformGet",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Get the name of the currently selected platform (BSD, Linux, OSX",
+	Long: `Get the name of the currently selected platform (BSD, Linux, OSX)
+    cobra platformGet  // bsd`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("platformGet called")
 	},
