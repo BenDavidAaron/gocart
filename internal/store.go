@@ -7,12 +7,6 @@ import (
 
 const MappingFilePath string = ".gocart.json"
 
-type ConfigSpec struct {
-	name     string
-	path     string
-	platform string
-}
-
 // Go Cart Data Store
 type GoCartStore struct {
 	Path string
@@ -44,20 +38,50 @@ func (gcStore *GoCartStore) Deserialize() (GoCartState, error) {
 }
 
 //Go Cart Application State
+func ReadGoCartState() (GoCartState, error) {
+	//Open a the local repo's mapping and return the state as a mutable object
+	store := GoCartStore{
+		Path: MappingFilePath,
+	}
+	state, err := store.Deserialize()
+	if err != nil {
+		return GoCartState{}, err
+	}
+	return state, err
+}
+
+func WriteGocartState(gcState GoCartState) error {
+	//Write modified state to the local repo's mapping
+	store := GoCartStore{Path: MappingFilePath}
+	err := store.Serialize(gcState)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 type GoCartState struct {
 	configs  map[string]ConfigSpec
 	Platform string
 }
 
-func (gcStore *GoCartState) Put(cfg ConfigSpec) {
-	gcStore.configs[cfg.name] = cfg
+func (gcState *GoCartState) PutConfig(cfg ConfigSpec) {
+	gcState.configs[cfg.name] = cfg
 	return
 }
 
-func (gcStore *GoCartState) Get(name string) ConfigSpec {
-	return gcStore.configs[name]
+func (gcState *GoCartState) GetConfig(name string) ConfigSpec {
+	return gcState.configs[name]
 }
 
-func (gcStore *GoCartState) GetAll() map[string]ConfigSpec {
-	return gcStore.configs
+func (gcState *GoCartState) GetConfigs() map[string]ConfigSpec {
+	return gcState.configs
+}
+
+func (gcState *GoCartState) GetPlatform() string {
+	return gcState.Platform
+}
+
+func (gcState *GoCartState) SetPlatform(newPlatform string) {
+	gcState.Platform = newPlatform
 }
