@@ -5,11 +5,10 @@ import (
 	"flag"
 	"os"
 
-	"github.com/bendavidaaron/gocart"
+	"internal/gocart"
+
 	"github.com/google/subcommands"
 )
-
-const MappingFilePath string = ".gocart.json"
 
 type initCmd struct {
 	platform_name string
@@ -19,15 +18,16 @@ func (*initCmd) Name() string     { return "init" }
 func (*initCmd) Synopsis() string { return "create a gocart mapping file in the current directory" }
 func (*initCmd) Usage() string    { return "init" }
 
-func (cmd *initCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	os.Create(MappingFilePath)
-	initState := gocart.GoCartState{platform: f.platform}
-	kvStore := KeyValueStore{path: MappingFilePath}
-
-	return subcommands.ExitSuccess
-}
 func (cmd *initCmd) SetFlags(f *flag.FlagSet) {
 	f.StringVar(&cmd.platform_name, "p", "", "platform name (OSX, BSD, Linux)")
+}
+
+func (cmd *initCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+	os.Create(gocart.MappingFilePath)
+	initState := gocart.GoCartState{Platform: cmd.platform_name}
+	kvStore := gocart.KeyValueStore{Path: gocart.MappingFilePath}
+	kvStore.Serialize(initState)
+	return subcommands.ExitSuccess
 }
 
 type addCmd struct {

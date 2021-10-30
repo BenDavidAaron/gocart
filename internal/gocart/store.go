@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 )
 
+const MappingFilePath string = ".gocart.json"
+
 type ConfigSpec struct {
 	name     string
 	path     string
@@ -12,11 +14,11 @@ type ConfigSpec struct {
 }
 type GoCartState struct {
 	configs  map[string]ConfigSpec
-	platform string
+	Platform string
 }
 
 type KeyValueStore struct {
-	path string
+	Path string
 }
 
 func (*KeyValueStore) Serialize(state GoCartState) error {
