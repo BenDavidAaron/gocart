@@ -17,7 +17,7 @@ type ConfigSpec struct {
 }
 
 type GoCartState struct {
-	configs  []ConfigSpec
+	configs  map[string]ConfigSpec
 	platform string
 }
 
@@ -27,20 +27,39 @@ type KeyValueStore struct {
 	path string
 }
 
-func (*KeyValueStore) Put(key, value string) error {
+func (*KeyValueStore) Serialize(state GoCartState) error {
+	stateData, err := json.Marshal(state)
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(mappingFilePath, stateData, 0640)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (*KeyValueStore) Deserialize() (GoCartState, error) {
+	var state GoCartState
 	kvFile, err := ioutil.ReadFile(mappingFilePath)
 	if err != nil {
-		return err
+		return state, err
 	}
-	var kvMap map[string]interface{}
-	json.Unmarshal([]byte(kvFile), &kvMap)
-	kvMap[key] = value
-	updatedKvFile, err := json.Marshal(kvMap)
+	err = json.Unmarshal([]byte(kvFile), &state)
+	if err != nil {
+		return state, err
+	}
+	return state, nil
+}
+
+func (kvStore *KeyValueStore) Put(cfg ConfigSpec) error {
+	kvState, err := kvStore.Deserialize()
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(mappingFilePath, updatedKvFile, 0640)
-	if err != nil {
+	kvState.configs[cfg.name] = cfg
+	err = kvStore.Serialize()
+	if err != None {
 		return err
 	}
 	return nil
