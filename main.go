@@ -58,11 +58,28 @@ func (kvStore *KeyValueStore) Put(cfg ConfigSpec) error {
 		return err
 	}
 	kvState.configs[cfg.name] = cfg
-	err = kvStore.Serialize()
-	if err != None {
+	err = kvStore.Serialize(kvState)
+	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (kvStore *KeyValueStore) Get(name string) (ConfigSpec, error) {
+	kvState, err := kvStore.Deserialize()
+	if err != nil {
+		return ConfigSpec{}, err
+	}
+	return kvState.configs[name], nil
+}
+
+func (kvStore *KeyValueStore) GetAll() (map[string]ConfigSpec, error) {
+	cfgs := make(map[string]ConfigSpec)
+	kvState, err := kvStore.Deserialize()
+	if err != nil {
+		return cfgs, err
+	}
+	return kvState.configs, nil
 }
 
 type initCmd struct {
