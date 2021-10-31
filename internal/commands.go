@@ -10,6 +10,7 @@ func InitRepo() error {
 	newStore := new(GoCartStore)
 	newStore.Path = MappingFilePath
 	err := newStore.Init()
+	return err
 }
 
 func GetPlatform() (string, error) {

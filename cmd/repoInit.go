@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
@@ -26,17 +27,16 @@ import (
 // repoInitCmd represents the repoInit command
 var repoInitCmd = &cobra.Command{
 	Use:   "repoInit",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Create a blank mapping file in the current directory",
+	Long: `Create a blank mapping file in the current directory. Run this
+	in an empty git repository so you can check in config files scattered 
+	around your filesystem`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("repoInit called")
 		err := gocart.InitRepo()
-		return err
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

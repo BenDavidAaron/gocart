@@ -14,10 +14,7 @@ type GoCartStore struct {
 
 func (gcStore *GoCartStore) Init() error {
 	// Create a blank GoCart state and serialize it to disk
-	var blankState GoCartState
-	blankState.configs = map[string]ConfigSpec{}
-	blankState.platform = ""
-	err := gcStore.Serialize(gcState)
+	err := gcStore.Serialize(GoCartState{map[string]ConfigSpec{}, ""})
 	if err != nil {
 		return err
 	}
