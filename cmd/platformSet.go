@@ -18,7 +18,9 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
+	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +32,11 @@ var platformSetCmd = &cobra.Command{
 	gocart platformSet openbsd  // Sets the platform to openbsd`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("platformSet called")
+		defer fmt.Println("platformSet Exiting")
+		err := gocart.SetPlatform(args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 

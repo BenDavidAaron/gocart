@@ -24,33 +24,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// platformGetCmd represents the platformGet command
-var platformGetCmd = &cobra.Command{
-	Use:   "platformGet",
-	Short: "Get the name of the currently selected platform (BSD, Linux, OSX",
-	Long: `Get the name of the currently selected platform (BSD, Linux, OSX)
-    cobra platformGet  // bsd`,
+// repoInitCmd represents the repoInit command
+var repoInitCmd = &cobra.Command{
+	Use:   "repoInit",
+	Short: "Create a blank mapping file in the current directory",
+	Long: `Create a blank mapping file in the current directory. Run this
+	in an empty git repository so you can check in config files scattered 
+	around your filesystem`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("platformGet called")
-		platform, err := gocart.GetPlatform()
+		fmt.Println("repoInit called")
+		err := gocart.InitRepo()
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(platform)
-
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(platformGetCmd)
+	rootCmd.AddCommand(repoInitCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// platformGetCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// repoInitCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// platformGetCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// repoInitCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
