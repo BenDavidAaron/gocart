@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"log"
 
-	gocart "github.com/bendavidaaron/gocart/internal"
+	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
 )
 
