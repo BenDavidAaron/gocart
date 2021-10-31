@@ -12,6 +12,18 @@ type GoCartStore struct {
 	Path string
 }
 
+func (gcStore *GoCartStore) Init() error {
+	// Create a blank GoCart state and serialize it to disk
+	var blankState GoCartState
+	blankState.configs = map[string]ConfigSpec{}
+	blankState.platform = ""
+	err := gcStore.Serialize(gcState)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (gcStore *GoCartStore) Serialize(gcState GoCartState) error {
 	stateData, err := json.Marshal(gcState)
 	if err != nil {
@@ -38,6 +50,18 @@ func (gcStore *GoCartStore) Deserialize() (GoCartState, error) {
 }
 
 //Go Cart Application State
+func InitGoCartState() (GoCartState, error) {
+	//Create  a new gocart repo in the current directory and return the state as a mutable object
+	store := GoCartStore{
+		Path: MappingFilePath,
+	}
+	state, err := store.Deserialize()
+	if err != nil {
+		return GoCartState{}, err
+	}
+	return state, err
+}
+
 func ReadGoCartState() (GoCartState, error) {
 	//Open a the local repo's mapping and return the state as a mutable object
 	store := GoCartStore{

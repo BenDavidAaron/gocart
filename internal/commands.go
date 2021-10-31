@@ -6,6 +6,12 @@ type ConfigSpec struct {
 	platform string
 }
 
+func InitRepo() error {
+	newStore := new(GoCartStore)
+	newStore.Path = MappingFilePath
+	err := newStore.Init()
+}
+
 func GetPlatform() (string, error) {
 	var platform string
 	gcState, err := ReadGoCartState()
