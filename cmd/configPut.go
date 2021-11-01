@@ -33,13 +33,39 @@ var configPutCmd = &cobra.Command{
 	and then replace the old config file with a symlink to the new config file in the gocart repo
 
     gocart configPut vimrc ~/.vimrc`,
+	Args: cobra.OnlyValidArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configPut called")
+		name, err := cmd.Flags().GetString("name")
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(name)
+
+		path, err := cmd.Flags().GetString("path")
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(path)
+
+		//cfg := new(gocart.ConfigSpec)
+		//cfg.Name = Name
+		//fmt.Println(cfg)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(configPutCmd)
+
+	var Name string
+	configPutCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
+	configPutCmd.MarkFlagRequired("name")
+
+	var Path string
+	configPutCmd.Flags().StringVarP(&Path, "path", "p", "", "config file originial path")
+	configPutCmd.MarkFlagRequired("path")
+
+	// TODO: return error if name or link are empty
 
 	// Here you will define your flags and configuration settings.
 
