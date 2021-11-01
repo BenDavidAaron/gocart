@@ -1,9 +1,9 @@
 package gocart
 
 type ConfigSpec struct {
-	name     string
-	path     string
-	platform string
+	Name     string
+	Path     string
+	Platform string
 }
 
 func InitRepo() error {
@@ -55,7 +55,7 @@ func PutConfigSpec(cfg ConfigSpec) error {
 	}
 	// TODO: Copy config file to workdir
 	// TODO: Backlink config file from workdir to cfg.Path
-	gcState.configs[cfg.name] = cfg
+	gcState.configs[cfg.Name] = cfg
 	err = WriteGocartState(gcState)
 	if err != nil {
 		return err

@@ -87,7 +87,7 @@ type GoCartState struct {
 }
 
 func (gcState *GoCartState) PutConfig(cfg ConfigSpec) {
-	gcState.configs[cfg.name] = cfg
+	gcState.configs[cfg.Name] = cfg
 	return
 }
 
