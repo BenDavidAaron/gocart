@@ -18,7 +18,9 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
+	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -29,8 +31,27 @@ var configGetCmd = &cobra.Command{
 	Long: `Get a config by name, skipping the name will Get all configs
 	cobra configGet vimrc //gets the vimrc mapping
 	cobra configGet       //gets all stored configs`,
+	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configGet called")
+		var cfg gocart.ConfigSpec
+		var cfgs []gocart.ConfigSpec
+		var err error
+		cfgName := strings.Join(args, "")
+		if cfgName == "" {
+			cfgs, err = gocart.GetAllConfigs()
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		} else {
+			cfg, err = gocart.GetConfigSpec(cfgName)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+		fmt.Println(cfgs)
+		fmt.Println(cfg)
 	},
 }
 
