@@ -19,6 +19,7 @@ package cmd
 import (
 	"fmt"
 
+	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -47,6 +48,11 @@ var configPutCmd = &cobra.Command{
 			fmt.Println(err)
 		}
 		fmt.Println(path)
+		platform, err := cmd.Flags().GetString("platform")
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(platform)
 
 		//cfg := new(gocart.ConfigSpec)
 		//cfg.Name = Name
@@ -65,6 +71,12 @@ func init() {
 	configPutCmd.Flags().StringVarP(&Path, "path", "p", "", "config file originial path")
 	configPutCmd.MarkFlagRequired("path")
 
+	var Platform string
+	currentPlatform, err := gocart.GetPlatform()
+	if err != nil {
+		fmt.Println(err)
+	}
+	configPutCmd.Flags().StringVarP(&Platform, "platform", "", currentPlatform, "platform name (overrides current setting)")
 	// TODO: return error if name or link are empty
 
 	// Here you will define your flags and configuration settings.
