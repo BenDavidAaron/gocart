@@ -47,6 +47,20 @@ func GetConfigSpec(cfgName string) (ConfigSpec, error) {
 	return cfg, nil
 }
 
+func GetAllConfigs() ([]ConfigSpec, error) {
+	// Get every config spec in the current dir's gocart mapping
+	var cfgs []ConfigSpec
+	gcState, err := ReadGoCartState()
+	if err != nil {
+		return cfgs, err
+	}
+	cfgs = make([]ConfigSpec, 0, len(gcState.configs))
+	for _, cfg := range gcState.configs {
+		cfgs = append(cfgs, cfg)
+	}
+	return cfgs, nil
+}
+
 func PutConfigSpec(cfg ConfigSpec) error {
 	// Put a new config spec in the gocart mapping file
 	gcState, err := ReadGoCartState()

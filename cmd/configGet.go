@@ -31,15 +31,27 @@ var configGetCmd = &cobra.Command{
 	Long: `Get a config by name, skipping the name will Get all configs
 	cobra configGet vimrc //gets the vimrc mapping
 	cobra configGet       //gets all stored configs`,
-	Args: cobra.ExactArgs(1),
+	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configGet called")
+		var cfg gocart.ConfigSpec
+		var cfgs []gocart.ConfigSpec
+		var err error
 		cfgName := strings.Join(args, "")
-		cfg, err := gocart.GetConfigSpec(cfgName)
-		if err != nil {
-			fmt.Println(err)
+		if cfgName == "" {
+			cfgs, err = gocart.GetAllConfigs()
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		} else {
+			cfg, err = gocart.GetConfigSpec(cfgName)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
-		fmt.Println("cfg: %s, platform: %s, Path: %s", cfg.Name, cfg.Platform, cfg.Path)
+		fmt.Println(cfgs)
+		fmt.Println(cfg)
 	},
 }
 
