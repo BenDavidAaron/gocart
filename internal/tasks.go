@@ -67,8 +67,10 @@ func PutConfigSpec(cfg ConfigSpec) error {
 	if err != nil {
 		return err
 	}
-	// TODO: Copy config file to workdir
-	// TODO: Backlink config file from workdir to cfg.Path
+	err = LinkConfig(cfg)
+	if err != nil {
+		return err
+	}
 	gcState.configs[cfg.Name] = cfg
 	err = WriteGocartState(gcState)
 	if err != nil {
@@ -83,8 +85,8 @@ func DeleteConfigSpec(cfgName string) error {
 	if err != nil {
 		return err
 	}
-	// TODO: move config file to cfg.Path
-	// TODO: remove backlink from repo's config file
+	cfg := gcState.configs[cfgName]
+	UnlinkConfig(cfg)
 	delete(gcState.configs, cfgName)
 	err = WriteGocartState(gcState)
 	if err != nil {
