@@ -3,6 +3,7 @@ package gocart
 import (
 	"encoding/json"
 	"io/ioutil"
+	"path/filepath"
 )
 
 const MappingFilePath string = ".gocart.json"
@@ -17,11 +18,13 @@ type GoCartState struct {
 func InitGoCartState() (GoCartState, error) {
 	//Create a new gocart repo in the current directory and initialize it with empty state
 	gcState := GoCartState{
-		Path:     MappingFilePath,
+		Path:     "",
 		Configs:  make(map[string]ConfigSpec),
 		Platform: "",
 	}
-	err := gcState.Serialize()
+	var err error
+	gcState.Path, err = filepath.Abs(MappingFilePath)
+	err = gcState.Serialize()
 	return gcState, err
 }
 
@@ -29,7 +32,10 @@ func OpenGoCartState() (GoCartState, error) {
 	// Load the gocart repo in the current directory and return it
 	var gcState GoCartState
 	var err error
-	gcState.Path = MappingFilePath
+	gcState.Path, err = filepath.Abs(MappingFilePath)
+	if err != nil {
+		return gcState, err
+	}
 	gcState, err = gcState.Deserialize()
 	return gcState, err
 }
