@@ -7,15 +7,13 @@ type ConfigSpec struct {
 }
 
 func InitRepo() error {
-	newStore := new(GoCartStore)
-	newStore.Path = MappingFilePath
-	err := newStore.Init()
+	_, err := InitGoCartState()
 	return err
 }
 
 func GetPlatform() (string, error) {
 	var platform string
-	gcState, err := ReadGoCartState()
+	gcState, err := OpenGoCartState()
 	if err != nil {
 		return platform, err
 	}
@@ -24,12 +22,12 @@ func GetPlatform() (string, error) {
 }
 
 func SetPlatform(newPlatform string) error {
-	gcState, err := ReadGoCartState()
+	gcState, err := OpenGoCartState()
 	if err != nil {
 		return err
 	}
 	gcState.Platform = newPlatform
-	err = WriteGocartState(gcState)
+	err = gcState.Serialize()
 	if err != nil {
 		return err
 	}
@@ -39,23 +37,23 @@ func SetPlatform(newPlatform string) error {
 func GetConfigSpec(cfgName string) (ConfigSpec, error) {
 	// Get a config spec from the current dir's gocart mapping
 	var cfg ConfigSpec
-	gcState, err := ReadGoCartState()
+	gcState, err := OpenGoCartState()
 	if err != nil {
 		return cfg, err
 	}
-	cfg = gcState.configs[cfgName]
+	cfg = gcState.Configs[cfgName]
 	return cfg, nil
 }
 
 func GetAllConfigs() ([]ConfigSpec, error) {
 	// Get every config spec in the current dir's gocart mapping
 	var cfgs []ConfigSpec
-	gcState, err := ReadGoCartState()
+	gcState, err := OpenGoCartState()
 	if err != nil {
 		return cfgs, err
 	}
-	cfgs = make([]ConfigSpec, 0, len(gcState.configs))
-	for _, cfg := range gcState.configs {
+	cfgs = make([]ConfigSpec, 0, len(gcState.Configs))
+	for _, cfg := range gcState.Configs {
 		cfgs = append(cfgs, cfg)
 	}
 	return cfgs, nil
@@ -63,7 +61,7 @@ func GetAllConfigs() ([]ConfigSpec, error) {
 
 func PutConfigSpec(cfg ConfigSpec) error {
 	// Put a new config spec in the gocart mapping file
-	gcState, err := ReadGoCartState()
+	gcState, err := OpenGoCartState()
 	if err != nil {
 		return err
 	}
@@ -71,8 +69,8 @@ func PutConfigSpec(cfg ConfigSpec) error {
 	if err != nil {
 		return err
 	}
-	gcState.configs[cfg.Name] = cfg
-	err = WriteGocartState(gcState)
+	gcState.Configs[cfg.Name] = cfg
+	err = gcState.Serialize()
 	if err != nil {
 		return err
 	}
@@ -81,14 +79,14 @@ func PutConfigSpec(cfg ConfigSpec) error {
 
 func DeleteConfigSpec(cfgName string) error {
 	// Remove a config spec from the current dir's gocart mapping
-	gcState, err := ReadGoCartState()
+	gcState, err := OpenGoCartState()
 	if err != nil {
 		return err
 	}
-	cfg := gcState.configs[cfgName]
+	cfg := gcState.Configs[cfgName]
 	UnlinkConfig(cfg)
-	delete(gcState.configs, cfgName)
-	err = WriteGocartState(gcState)
+	delete(gcState.Configs, cfgName)
+	err = gcState.Serialize()
 	if err != nil {
 		return err
 	}
