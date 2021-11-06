@@ -31,7 +31,11 @@ func link(name, path string) error {
 	if err != nil {
 		return err
 	}
-	err = os.Symlink(path, newPath)
+	err = os.Remove(path)
+	if err != nil {
+		return err
+	}
+	err = os.Symlink(newPath, path)
 	if err != nil {
 		return err
 	}
