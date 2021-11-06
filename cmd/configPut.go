@@ -40,23 +40,41 @@ var configPutCmd = &cobra.Command{
 		name, err := cmd.Flags().GetString("name")
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 		fmt.Println(name)
 
 		path, err := cmd.Flags().GetString("path")
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 		fmt.Println(path)
 		platform, err := cmd.Flags().GetString("platform")
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 		fmt.Println(platform)
 
-		//cfg := new(gocart.ConfigSpec)
-		//cfg.Name = Name
-		//fmt.Println(cfg)
+		cfg := new(gocart.ConfigSpec)
+		cfg.Name = name
+		cfg.Path = path
+		if platform != "" {
+			cfg.Platform = platform
+		} else {
+			cfg.Platform, err = gocart.GetPlatform()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		}
+		err = gocart.PutConfigSpec(*cfg)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(cfg)
 	},
 }
 
