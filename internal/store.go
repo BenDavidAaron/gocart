@@ -43,6 +43,9 @@ func (gcStore *GoCartStore) Deserialize() (GoCartState, error) {
 	if err != nil {
 		return state, err
 	}
+	if state.configs == nil {
+		state.configs = make(map[string]ConfigSpec)
+	}
 	return state, nil
 }
 
