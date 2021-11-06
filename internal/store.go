@@ -7,33 +7,48 @@ import (
 
 const MappingFilePath string = ".gocart.json"
 
-// Go Cart Data Store
-type GoCartStore struct {
-	Path string
+//Go Cart Application State
+type GoCartState struct {
+	Configs  map[string]ConfigSpec
+	Platform string
+	Path     string
 }
 
-func (gcStore *GoCartStore) Init() error {
-	// Create a blank GoCart state and serialize it to disk
-	err := gcStore.Serialize(GoCartState{map[string]ConfigSpec{}, ""})
-	if err != nil {
-		return err
+func InitGoCartState() (GoCartState, error) {
+	//Create a new gocart repo in the current directory and initialize it with empty state
+	gcState := GoCartState{
+		Path:     MappingFilePath,
+		Configs:  make(map[string]ConfigSpec),
+		Platform: "",
 	}
-	return nil
+	err := gcState.Serialize()
+	return gcState, err
 }
 
-func (gcStore *GoCartStore) Serialize(gcState GoCartState) error {
+func OpenGoCartState() (GoCartState, error) {
+	// Load the gocart repo in the current directory and return it
+	var gcState GoCartState
+	var err error
+	gcState.Path = MappingFilePath
+	gcState, err = gcState.Deserialize()
+	return gcState, err
+}
+
+func (gcState *GoCartState) Serialize() error {
+	// Read the file at ./.gocart.json and load it's platform name and configs into memory
 	stateData, err := json.Marshal(gcState)
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(gcStore.Path, stateData, 0640)
+	err = ioutil.WriteFile(gcState.Path, stateData, 0640)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (gcStore *GoCartStore) Deserialize() (GoCartState, error) {
+func (gcStore *GoCartState) Deserialize() (GoCartState, error) {
+	// Save the configs and platform name in memory to a file at ./.gocart.json
 	var state GoCartState
 	kvFile, err := ioutil.ReadFile(MappingFilePath)
 	if err != nil {
@@ -43,63 +58,23 @@ func (gcStore *GoCartStore) Deserialize() (GoCartState, error) {
 	if err != nil {
 		return state, err
 	}
-	if state.configs == nil {
-		state.configs = make(map[string]ConfigSpec)
+	if state.Configs == nil {
+		state.Configs = make(map[string]ConfigSpec)
 	}
 	return state, nil
 }
 
-//Go Cart Application State
-func InitGoCartState() (GoCartState, error) {
-	//Create  a new gocart repo in the current directory and return the state as a mutable object
-	store := GoCartStore{
-		Path: MappingFilePath,
-	}
-	state, err := store.Deserialize()
-	if err != nil {
-		return GoCartState{}, err
-	}
-	return state, err
-}
-
-func ReadGoCartState() (GoCartState, error) {
-	//Open a the local repo's mapping and return the state as a mutable object
-	store := GoCartStore{
-		Path: MappingFilePath,
-	}
-	state, err := store.Deserialize()
-	if err != nil {
-		return GoCartState{}, err
-	}
-	return state, err
-}
-
-func WriteGocartState(gcState GoCartState) error {
-	//Write modified state to the local repo's mapping
-	store := GoCartStore{Path: MappingFilePath}
-	err := store.Serialize(gcState)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-type GoCartState struct {
-	configs  map[string]ConfigSpec
-	Platform string
-}
-
 func (gcState *GoCartState) PutConfig(cfg ConfigSpec) {
-	gcState.configs[cfg.Name] = cfg
+	gcState.Configs[cfg.Name] = cfg
 	return
 }
 
 func (gcState *GoCartState) GetConfig(name string) ConfigSpec {
-	return gcState.configs[name]
+	return gcState.Configs[name]
 }
 
 func (gcState *GoCartState) GetConfigs() map[string]ConfigSpec {
-	return gcState.configs
+	return gcState.Configs
 }
 
 func (gcState *GoCartState) GetPlatform() string {
