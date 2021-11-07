@@ -1,33 +1,75 @@
 # gocart
+
 Golang Configuration and Revision Tracker
 
-## Proposed Structure
+## Why?
 
-### Starting a Go Cart
+To make it easier to maintain your dotfiles across hosts ands platforms. It was built for use in tandem with git, but any SCM tool should suffice. 
 
-1. Create a git (or other SCM) repo
-1. `gocart init`
+## How?
 
-Gocart init will
+### Install
 
-1. Create a `.gocart/` folder for storing configuration
-1. Create a `.gocart/symlink_mapping` file for storing the mapping of `$CONFIG_NAME` to `$OLD_PATH`
+1. clone it
 
-### Adding Files
+2. `go build`
 
-`gocart add $PATH_TO_CONFIG_FILE $CONFIG_NAME`
+3. copy to path
 
-Add a new config file at the path to gocart's tracking.
+4. ???
 
-1. copy `$PATH_TO_CONFIG` to `$GOCART_PATH/$CONFIG_NAME`
-1. remove the file at `$PATH_TO_CONFIG`
-1. place a symlink to `$GOCART_PATH/$CONFIG_NAME` in the old file's path, where applications expecting a config file will expect it
+5. Profit
 
-### Removing Files
+### Setup
 
-`gocart remove $CONFIG_NAME`
+1. `mkdir -p ~/src/dotfile_repo` or wherever you want your system config to live
 
-Remove a file from gocart's tracking and place the tracked file at it's original path.
+2. `cd ~/src/dotfile_repo`
 
-1. remove the symlink located at `$PATH_TO_CONFIG`
-1. move the config file at `$GOCART_PATH/$CONFIG_NAME` back to `$PATH_TO_CONFIG` 
+3. `git init`
+
+4. `gocart repoInit`
+
+5. `gocart platformSet $YOUR_OS_NAME` could be osx, debian, bsd...
+
+6. `git add .gocart.json`
+
+7. `git commit -m "started versioning my dotfiles with gocart and I got a raise at work"`
+
+8. `git push` tell all your friends!
+
+### Track a config
+
+1. `gocart configAdd -n vimrc -p ~/.vimrc`
+
+2. `git add vimrc .gocart.json`
+
+3. `git commit -m "tracking my vimrc with gocart, now I can run a 6 minute mile!"`
+
+### Remove a config
+
+1. `gocart configDel vimrc`
+
+2. `git add .gocart.json vimrc`
+
+3. `commit -m "remove vimrc from gocart tracking, I stubbed my toe after I got up from my workspace"`
+
+## ...but How does it?
+
+Gocart works by copying your config files into your working directory, deleting the originals and replacing them with symlinks to the new copy. To remove a config from tracking, it does the reverse. When used inside of a git repository, you can version your personal configuration. You can also use Github or Gitlab to share your dotfiles across machines.
+
+## TODO:
+
+* Version Json Schema
+
+* Setup detailed logging
+
+* Add command to install dotfiles system-wide after `git clone`
+
+* Add nested `kubectl` style subcommands
+
+### Notes
+
+I built this mainly as a project to learn `Go`, and solve a marginally painful problem in my day-to-day work as a software engineer. 
+
+If you find this tool useful, please tell your friends, and consider submitting a feature request to the issue tracker, or opening a PR on an existing issue. 
