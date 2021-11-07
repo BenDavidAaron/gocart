@@ -84,7 +84,10 @@ func DeleteConfigSpec(cfgName string) error {
 		return err
 	}
 	cfg := gcState.Configs[cfgName]
-	UnlinkConfig(cfg)
+	err = UnlinkConfig(cfg)
+	if err != nil {
+		return err
+	}
 	delete(gcState.Configs, cfgName)
 	err = gcState.Serialize()
 	if err != nil {

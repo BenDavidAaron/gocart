@@ -2,6 +2,7 @@ package gocart
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -44,6 +45,7 @@ func link(name, path string) error {
 func UnlinkConfig(cfg ConfigSpec) error {
 	// Take a config Spec, Copy it to it's original location,
 	// overwriting the backlink and remove the copy of the cfg from the working dir
+	fmt.Println("gocart unlink config", cfg)
 	err := unlink(cfg.Name, cfg.Path)
 	if err != nil {
 		return err
@@ -58,7 +60,12 @@ func unlink(name, Path string) error {
 		return err
 	}
 	if !filepath.IsAbs(Path) {
+		fmt.Println(Path)
 		return errors.New("gocart: cannot Unlink to a non-absolute path")
+	}
+	err = os.Remove(Path) // Delete the symlink at Path
+	if err != nil {
+		return err
 	}
 	err = copyFile(ourPath, Path)
 	if err != nil {

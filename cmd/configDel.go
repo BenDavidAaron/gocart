@@ -18,7 +18,9 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
+	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -28,8 +30,19 @@ var configDelCmd = &cobra.Command{
 	Short: "Delete a Configuration from the current gocart repo",
 	Long: `Delete a Congig file from the current gocart repo and restore the config file to it's original home
     gocart configDel vimrc`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configDel called")
+		var name string
+		var err error
+		fmt.Println(args)
+		name = strings.Join(args, "")
+		fmt.Println(name)
+		err = gocart.DeleteConfigSpec(name)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
 	},
 }
 
