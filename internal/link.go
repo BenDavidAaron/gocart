@@ -2,7 +2,6 @@ package gocart
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -42,10 +41,10 @@ func link(name, path string) error {
 	}
 	return nil
 }
+
 func UnlinkConfig(cfg ConfigSpec) error {
 	// Take a config Spec, Copy it to it's original location,
 	// overwriting the backlink and remove the copy of the cfg from the working dir
-	fmt.Println("gocart unlink config", cfg)
 	err := unlink(cfg.Name, cfg.Path)
 	if err != nil {
 		return err
@@ -60,7 +59,6 @@ func unlink(name, Path string) error {
 		return err
 	}
 	if !filepath.IsAbs(Path) {
-		fmt.Println(Path)
 		return errors.New("gocart: cannot Unlink to a non-absolute path")
 	}
 	err = os.Remove(Path) // Delete the symlink at Path
@@ -85,6 +83,26 @@ func copyFile(src string, dst string) error {
 	}
 	// Write data to dst
 	err = ioutil.WriteFile(dst, data, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func InsertConfig(cfg ConfigSpec) error {
+	// Take a config spec, and insert a symlink to the repo's copy
+	// of that config file at the config spec's path.
+	repoCfgPath, err := filepath.Abs(cfg.Name)
+	if err != nil {
+		return err
+	}
+	err = insert(repoCfgPath, cfg.Path)
+	return err
+}
+
+func insert(repoPath, systemPath string) error {
+	// Place a symlink pointing from path to ./name
+	err := os.Symlink(repoPath, systemPath)
 	if err != nil {
 		return err
 	}
