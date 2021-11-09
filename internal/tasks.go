@@ -1,5 +1,9 @@
 package gocart
 
+import (
+	"errors"
+)
+
 type ConfigSpec struct {
 	Name     string
 	Path     string
@@ -9,6 +13,23 @@ type ConfigSpec struct {
 func InitRepo() error {
 	_, err := InitGoCartState()
 	return err
+}
+
+func InstallRepo() error {
+	gcState, err := OpenGoCartState()
+	if err != nil {
+		return err
+	}
+	if gcState.Configs == nil {
+		return errors.New("gocart: no configs to install")
+	}
+	for _, cfg := range gcState.Configs {
+		err = InsertConfig(cfg)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func GetPlatform() (string, error) {
