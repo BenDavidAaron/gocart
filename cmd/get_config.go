@@ -26,7 +26,7 @@ import (
 
 // configGetCmd represents the configGet command
 var configGetCmd = &cobra.Command{
-	Use:   "configGet",
+	Use:   "config",
 	Short: "Get a config by name, or get all configs",
 	Long: `Get a config by name, skipping the name will Get all configs
 	cobra configGet vimrc //gets the vimrc mapping
