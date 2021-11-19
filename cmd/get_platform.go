@@ -25,8 +25,8 @@ import (
 )
 
 // platformGetCmd represents the platformGet command
-var platformGetCmd = &cobra.Command{
-	Use:   "platformGet",
+var getPlatformCmd = &cobra.Command{
+	Use:   "platform",
 	Short: "Get the name of the currently selected platform (BSD, Linux, OSX",
 	Long: `Get the name of the currently selected platform (BSD, Linux, OSX)
     cobra platformGet  // bsd`,
@@ -42,7 +42,7 @@ var platformGetCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(platformGetCmd)
+	getCmd.AddCommand(getPlatformCmd)
 
 	// Here you will define your flags and configuration settings.
 
