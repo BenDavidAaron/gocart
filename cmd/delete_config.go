@@ -25,8 +25,8 @@ import (
 )
 
 // configDelCmd represents the configDel command
-var configDelCmd = &cobra.Command{
-	Use:   "configDel",
+var deleteCfgCmd = &cobra.Command{
+	Use:   "config",
 	Short: "Delete a Configuration from the current gocart repo",
 	Long: `Delete a Congig file from the current gocart repo and restore the config file to it's original home
     gocart configDel vimrc`,
@@ -47,7 +47,7 @@ var configDelCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(configDelCmd)
+	deleteCmd.AddCommand(deleteCfgCmd)
 
 	// Here you will define your flags and configuration settings.
 
