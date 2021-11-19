@@ -18,39 +18,44 @@ package cmd
 
 import (
 	"fmt"
-	"log"
+	"strings"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
 )
 
-// platformGetCmd represents the platformGet command
-var platformGetCmd = &cobra.Command{
-	Use:   "platformGet",
-	Short: "Get the name of the currently selected platform (BSD, Linux, OSX",
-	Long: `Get the name of the currently selected platform (BSD, Linux, OSX)
-    cobra platformGet  // bsd`,
+// configDelCmd represents the configDel command
+var deleteCfgCmd = &cobra.Command{
+	Use:   "config",
+	Short: "Delete a Configuration from the current gocart repo",
+	Long: `Delete a Congig file from the current gocart repo and restore the config file to it's original home
+    gocart configDel vimrc`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("platformGet called")
-		platform, err := gocart.GetPlatform()
+		fmt.Println("configDel called")
+		var name string
+		var err error
+		fmt.Println(args)
+		name = strings.Join(args, "")
+		fmt.Println(name)
+		err = gocart.DeleteConfigSpec(name)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
 		}
-		fmt.Println(platform)
-
+		return
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(platformGetCmd)
+	deleteCmd.AddCommand(deleteCfgCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// platformGetCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// configDelCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// platformGetCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// configDelCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

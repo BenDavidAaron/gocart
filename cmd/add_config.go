@@ -25,9 +25,9 @@ import (
 
 // configPutCmd represents the configPut command
 var configPutCmd = &cobra.Command{
-	Use:   "configPut",
-	Short: "Put a Config File into the current gocart mapping",
-	Long: `Put a Config File into the current gocart mapping
+	Use:   "config",
+	Short: "Add a Config File into the current gocart mapping",
+	Long: `Add a Config File into the current gocart mapping
 
 	this will create a file at the name specified in the gocart repo, 
 	copy the config file at the supplied path into the new file,
@@ -79,7 +79,7 @@ var configPutCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(configPutCmd)
+	addCmd.AddCommand(configPutCmd)
 
 	var Name string
 	configPutCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
