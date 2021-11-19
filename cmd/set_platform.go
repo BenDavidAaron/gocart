@@ -26,7 +26,7 @@ import (
 
 // platformSetCmd represents the platformSet command
 var setPlatformCmd = &cobra.Command{
-	Use:   "platformSet",
+	Use:   "platform",
 	Short: "Set the currently active platform",
 	Long: `Set the currently active platform
 	gocart platformSet openbsd  // Sets the platform to openbsd`,
