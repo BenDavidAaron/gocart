@@ -25,8 +25,8 @@ import (
 )
 
 // repoInitCmd represents the repoInit command
-var repoInitCmd = &cobra.Command{
-	Use:   "repoInit",
+var initCmd = &cobra.Command{
+	Use:   "init",
 	Short: "Create a blank mapping file in the current directory",
 	Long: `Create a blank mapping file in the current directory. Run this
 	in an empty git repository so you can check in config files scattered 
@@ -41,7 +41,7 @@ var repoInitCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(repoInitCmd)
+	rootCmd.AddCommand(initCmd)
 
 	// Here you will define your flags and configuration settings.
 
