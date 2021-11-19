@@ -26,7 +26,7 @@ import (
 
 // repoInstallCmd represents the repoInstall command
 var repoInstallCmd = &cobra.Command{
-	Use:   "gocart repoInstall",
+	Use:   "install",
 	Short: "Install the current gocart repo's config on your system",
 	Long: `Insert a symlink for each config in the current gocart repo
 	pointing from each config's ./name to it's path on your system`,
