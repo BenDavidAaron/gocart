@@ -17,24 +17,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("add called")
-	},
+	Short: "Add a new object to the current gocart repo",
+	Long: `Add a new configuration file or linkage to the current gocart repo
+	This will record new objects in ./.gocart.json
+	You should track newly changes to your gocart repo with git VCS`,
+	Run: func(cmd *cobra.Command, args []string) {},
 }
 
 func init() {
