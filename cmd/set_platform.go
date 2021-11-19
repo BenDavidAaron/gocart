@@ -25,7 +25,7 @@ import (
 )
 
 // platformSetCmd represents the platformSet command
-var platformSetCmd = &cobra.Command{
+var setPlatformCmd = &cobra.Command{
 	Use:   "platformSet",
 	Short: "Set the currently active platform",
 	Long: `Set the currently active platform
@@ -41,7 +41,7 @@ var platformSetCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(platformSetCmd)
+	setCmd.AddCommand(setPlatformCmd)
 
 	// Here you will define your flags and configuration settings.
 
