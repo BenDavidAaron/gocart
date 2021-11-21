@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
@@ -39,23 +40,16 @@ var configPutCmd = &cobra.Command{
 		fmt.Println("configPut called")
 		name, err := cmd.Flags().GetString("name")
 		if err != nil {
-			fmt.Println(err)
-			return
+			log.Fatal(err)
 		}
-		fmt.Println(name)
-
 		path, err := cmd.Flags().GetString("path")
 		if err != nil {
-			fmt.Println(err)
-			return
+			log.Fatal(err)
 		}
-		fmt.Println(path)
 		platform, err := cmd.Flags().GetString("platform")
 		if err != nil {
-			fmt.Println(err)
-			return
+			log.Fatal(err)
 		}
-		fmt.Println(platform)
 
 		cfg := new(gocart.ConfigSpec)
 		cfg.Name = name
@@ -65,16 +59,14 @@ var configPutCmd = &cobra.Command{
 		} else {
 			cfg.Platform, err = gocart.GetPlatform()
 			if err != nil {
-				fmt.Println(err)
-				return
+				log.Panicf("gocart: unable to retrieve active platform from disk", err)
 			}
 		}
 		err = gocart.PutConfigSpec(*cfg)
 		if err != nil {
-			fmt.Println(err)
-			return
+			log.Panicf("gocart: unable to write config to disk", err)
 		}
-		fmt.Println(cfg)
+		fmt.Println("Saved %s : %s [%s]", cfg.Name, cfg.Path, cfg.Platform)
 	},
 }
 
