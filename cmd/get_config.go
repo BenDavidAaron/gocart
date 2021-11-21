@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
@@ -33,25 +34,23 @@ var configGetCmd = &cobra.Command{
 	cobra configGet       //gets all stored configs`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("configGet called")
-		var cfg gocart.ConfigSpec
-		var cfgs []gocart.ConfigSpec
 		var err error
 		cfgName := strings.Join(args, "")
 		if cfgName == "" {
+			var cfgs []gocart.ConfigSpec
 			cfgs, err = gocart.GetAllConfigs()
 			if err != nil {
-				fmt.Println(err)
+				log.Panicf("gocart: could not fetch configs from file", err)
 			}
-
+			fmt.Println(cfgs)
 		} else {
+			var cfg gocart.ConfigSpec
 			cfg, err = gocart.GetConfigSpec(cfgName)
 			if err != nil {
-				fmt.Println(err)
+				log.Panicf("gocart: could not fetch config", cfgName, "from file", err)
 			}
+			fmt.Println(cfg)
 		}
-		fmt.Println(cfgs)
-		fmt.Println(cfg)
 	},
 }
 

@@ -31,12 +31,11 @@ var setPlatformCmd = &cobra.Command{
 	Long: `Set the currently active platform
 	gocart platformSet openbsd  // Sets the platform to openbsd`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("platformSet called")
-		defer fmt.Println("platformSet Exiting")
 		err := gocart.SetPlatform(args[0])
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("gocart: could not write platform to disk", err)
 		}
+		fmt.Printf("Set Platform to:", args[0])
 	},
 }
 

@@ -17,7 +17,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"fmt"
 	"log"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
@@ -31,11 +30,11 @@ var repoInstallCmd = &cobra.Command{
 	Long: `Insert a symlink for each config in the current gocart repo
 	pointing from each config's ./name to it's path on your system`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("repoInstall called")
 		err := gocart.InstallRepo()
 		if err != nil {
 			log.Fatal(err)
 		}
+		log.Printf("Installed configs from workdir and .gocart.json")
 	},
 }
 
