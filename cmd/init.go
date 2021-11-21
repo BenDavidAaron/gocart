@@ -32,11 +32,12 @@ var initCmd = &cobra.Command{
 	in an empty git repository so you can check in config files scattered 
 	around your filesystem`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("repoInit called")
 		err := gocart.InitRepo()
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Println("Created new gocart repo in working dir")
+		fmt.Println("Please add '.gocart.json' to version control")
 	},
 }
 
