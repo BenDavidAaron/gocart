@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
@@ -32,16 +33,15 @@ var deleteCfgCmd = &cobra.Command{
     gocart configDel vimrc`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("configDel called")
 		var name string
 		var err error
 		fmt.Println(args)
 		name = strings.Join(args, "")
-		fmt.Println(name)
 		err = gocart.DeleteConfigSpec(name)
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 		}
+		fmt.Println("configspec %s removed", name)
 		return
 	},
 }
