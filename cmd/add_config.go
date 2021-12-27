@@ -52,6 +52,7 @@ var configPutCmd = &cobra.Command{
 		}
 
 		cfg := new(gocart.ConfigSpec)
+		cfg.Paths = map[string]string{}
 		cfg.Name = name
 		cfg.Path = path
 		if platform != "" {
