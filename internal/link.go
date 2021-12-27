@@ -7,10 +7,11 @@ import (
 	"path/filepath"
 )
 
-func LinkConfig(cfg ConfigSpec) error {
+func LinkConfig(cfg ConfigSpec, platformName string) error {
 	// Take a config Spec, copy it into the gocart repo,
-	// and create a backlink at the original location
-	err := link(cfg.Name, cfg.Path)
+	// and create a symlink to the new file at the original
+	// (platform specified) location
+	err := link(cfg.Name, cfg.Paths[platformName])
 	if err != nil {
 		return err
 	}
@@ -42,15 +43,16 @@ func link(name, path string) error {
 	return nil
 }
 
-func UnlinkConfig(cfg ConfigSpec) error {
+func UnlinkConfig(cfg ConfigSpec, platformName string) error {
 	// Take a config Spec, Copy it to it's original location,
 	// overwriting the backlink and remove the copy of the cfg from the working dir
-	err := unlink(cfg.Name, cfg.Path)
+	err := unlink(cfg.Name, cfg.Paths[platformName])
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
 func unlink(name, Path string) error {
 	// Delete the symlink at path,
 	// copy ./name to path
@@ -75,6 +77,7 @@ func unlink(name, Path string) error {
 	}
 	return nil
 }
+
 func copyFile(src string, dst string) error {
 	// Read all content of src to data
 	data, err := ioutil.ReadFile(src)
@@ -89,14 +92,14 @@ func copyFile(src string, dst string) error {
 	return nil
 }
 
-func InsertConfig(cfg ConfigSpec) error {
+func InsertConfig(cfg ConfigSpec, platformName string) error {
 	// Take a config spec, and insert a symlink to the repo's copy
 	// of that config file at the config spec's path.
 	repoCfgPath, err := filepath.Abs(cfg.Name)
 	if err != nil {
 		return err
 	}
-	err = insert(repoCfgPath, cfg.Path)
+	err = insert(repoCfgPath, cfg.Paths[platformName])
 	return err
 }
 

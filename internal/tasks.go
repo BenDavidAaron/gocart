@@ -18,7 +18,7 @@ func InstallRepo() error {
 		return errors.New("gocart: no configs to install")
 	}
 	for _, cfg := range gcState.Configs {
-		err = InsertConfig(cfg)
+		err = InsertConfig(cfg, gcState.Platform)
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ func PutConfigSpec(cfg ConfigSpec) error {
 	if err != nil {
 		return err
 	}
-	err = LinkConfig(cfg)
+	err = LinkConfig(cfg, gcState.Platform)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func DeleteConfigSpec(cfgName string) error {
 		return err
 	}
 	cfg := gcState.Configs[cfgName]
-	err = UnlinkConfig(cfg)
+	err = UnlinkConfig(cfg, gcState.Platform)
 	if err != nil {
 		return err
 	}
