@@ -8,12 +8,6 @@ import (
 
 const MappingFilePath string = "./.gocart.json"
 
-//Go Cart Configuration Specification
-type ConfigSpec struct {
-	Name  string
-	Paths map[string]string
-}
-
 //Go Cart Application State
 type GoCartState struct {
 	Configs  map[string]ConfigSpec
@@ -95,4 +89,25 @@ func (gcState *GoCartState) GetPlatform() string {
 
 func (gcState *GoCartState) SetPlatform(newPlatform string) {
 	gcState.Platform = newPlatform
+}
+
+//Go Cart Configuration Specification
+type ConfigSpec struct {
+	Name  string
+	Paths map[string]string
+}
+
+func MakeConfigSpec() {
+	cfg = new(ConfigSpec)
+	cfg.Paths = map[string]string{}
+}
+
+func (cfg *ConfigSpec) AddPath(platform, path string) {
+	// Add a Platform Specific path to this config
+	cfg.Paths[platform] = path
+}
+
+func (cfg *ConfigSpec) RemovePath(platform string) {
+	// Remove a Platform Specific path from this config
+	delete(cfg.Paths[platform])
 }
