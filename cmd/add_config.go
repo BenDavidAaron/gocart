@@ -51,19 +51,17 @@ var configPutCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		cfg := new(gocart.ConfigSpec)
-		cfg.Paths = map[string]string{}
-		cfg.Name = name
-		var platformName string
-		if platform != "" {
-			platformName = platform
-		} else {
-			platformName, err = gocart.GetPlatform()
-			if err != nil {
-				log.Panicf("gocart: unable to retrieve active platform from disk", err)
-			}
+		cfg, err := gocart.GetConfigSpec(cfg.Name)
+		if err != nil {
+			log.Panicf("gocart: unable to get existing config from disk", err)
 		}
-		cfg.Paths[platformName] = path
+		if cfg != nil {
+			cfg.AddPath(platform, path)
+		} else {
+			cfg := gocart.MakeConfigSpec()
+			cfg.Name = name
+			cfg.AddPath(platform, path)
+		}
 		err = gocart.PutConfigSpec(*cfg)
 		if err != nil {
 			log.Panicf("gocart: unable to write config to disk", err)
