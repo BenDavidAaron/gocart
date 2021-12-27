@@ -6,7 +6,13 @@ import (
 	"path/filepath"
 )
 
-const MappingFilePath string = ".gocart.json"
+const MappingFilePath string = "./.gocart.json"
+
+//Go Cart Configuration Specification
+type ConfigSpec struct {
+	Name  string
+	Paths map[string]string
+}
 
 //Go Cart Application State
 type GoCartState struct {

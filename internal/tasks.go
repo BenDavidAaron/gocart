@@ -4,12 +4,6 @@ import (
 	"errors"
 )
 
-type ConfigSpec struct {
-	Name     string
-	Path     string
-	Platform string
-}
-
 func InitRepo() error {
 	_, err := InitGoCartState()
 	return err
