@@ -77,7 +77,7 @@ func init() {
 
 	gcState, err := gocart.OpenGoCartState()
 	if err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 
 	var Name string
