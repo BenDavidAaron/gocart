@@ -51,22 +51,23 @@ var configPutCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		cfg, err := gocart.GetConfigSpec(cfg.Name)
+		gcState, err := gocart.OpenGoCartState()
 		if err != nil {
-			log.Panicf("gocart: unable to get existing config from disk", err)
+			log.Panicf("gocart: unable to load application data from disk", err)
 		}
-		if cfg != nil {
+		var cfg gocart.ConfigSpec
+		if cfg, ok := gcState.Configs[name]; ok {
 			cfg.AddPath(platform, path)
 		} else {
 			cfg := gocart.MakeConfigSpec()
 			cfg.Name = name
 			cfg.AddPath(platform, path)
 		}
-		err = gocart.PutConfigSpec(*cfg)
+		err = gocart.PutConfigSpec(cfg)
 		if err != nil {
 			log.Panicf("gocart: unable to write config to disk", err)
 		}
-		fmt.Println("Saved %s : %s [%s]", cfg.Name, cfg.Paths[platformName], platformName)
+		fmt.Println("Saved %s : %s [%s]", cfg.Name, cfg.Paths[platform], platform)
 	},
 }
 

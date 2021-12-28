@@ -40,7 +40,10 @@ var configDelCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		gcState := gocart.OpenGoCartState()
+		gcState, err := gocart.OpenGoCartState()
+		if err != nil {
+			log.Fatal(err)
+		}
 		cfg := gcState.GetConfig(name)
 		delete(cfg.Paths, platform)
 		if platform == gcState.Platform {
