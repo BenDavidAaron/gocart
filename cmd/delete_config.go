@@ -64,16 +64,18 @@ var configDelCmd = &cobra.Command{
 
 func init() {
 	deleteCmd.AddCommand(configDelCmd)
+
+	gcState, err := gocart.OpenGoCartState()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var Name string
 	configDelCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
 	configDelCmd.MarkFlagRequired("name")
 
 	var Platform string
-	currentPlatform, err := gocart.GetPlatform()
-	if err != nil {
-		fmt.Println(err)
-	}
-	configDelCmd.Flags().StringVarP(&Platform, "platform", "", currentPlatform, "platform name (overrides current setting)")
+	configDelCmd.Flags().StringVarP(&Platform, "platform", "", gcState.Platform, "platform name (overrides current setting)")
 
 	// Here you will define your flags and configuration settings.
 

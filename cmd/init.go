@@ -32,7 +32,7 @@ var initCmd = &cobra.Command{
 	in an empty git repository so you can check in config files scattered 
 	around your filesystem`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := gocart.InitRepo()
+		_, err := gocart.InitGoCartState()
 		if err != nil {
 			log.Fatal(err)
 		}

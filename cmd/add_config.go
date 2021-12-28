@@ -63,7 +63,8 @@ var configPutCmd = &cobra.Command{
 			cfg.Name = name
 			cfg.AddPath(platform, path)
 		}
-		err = gocart.PutConfigSpec(cfg)
+		gcState.Configs[cfg.Name] = cfg
+		err = gcState.Serialize()
 		if err != nil {
 			log.Panicf("gocart: unable to write config to disk", err)
 		}
@@ -74,6 +75,11 @@ var configPutCmd = &cobra.Command{
 func init() {
 	addCmd.AddCommand(configPutCmd)
 
+	gcState, err := gocart.OpenGoCartState()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var Name string
 	configPutCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
 	configPutCmd.MarkFlagRequired("name")
@@ -83,12 +89,7 @@ func init() {
 	configPutCmd.MarkFlagRequired("path")
 
 	var Platform string
-	currentPlatform, err := gocart.GetPlatform()
-	if err != nil {
-		fmt.Println(err)
-	}
-	configPutCmd.Flags().StringVarP(&Platform, "platform", "", currentPlatform, "platform name (overrides current setting)")
-	// TODO: return error if name or link are empty
+	configPutCmd.Flags().StringVarP(&Platform, "platform", "", gcState.Platform, "platform name (overrides current setting)")
 
 	// Here you will define your flags and configuration settings.
 
