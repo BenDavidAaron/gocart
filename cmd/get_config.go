@@ -32,24 +32,24 @@ var configGetCmd = &cobra.Command{
 	Long: `Get a config by name, skipping the name will Get all configs
 	cobra configGet vimrc //gets the vimrc mapping
 	cobra configGet       //gets all stored configs`,
-	Args: cobra.MaximumNArgs(1),
+	Args: cobra.OnlyValidArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		var err error
-		cfgName := strings.Join(args, "")
-		if cfgName == "" {
-			var cfgs []gocart.ConfigSpec
-			cfgs, err = gocart.GetAllConfigs()
-			if err != nil {
-				log.Panicf("gocart: could not fetch configs from file", err)
+		name, err := cmd.Flags().GetString("name")
+		if err != nil {
+			log.Fatal(err)
+		}
+		platform, err := cmd.Flags().GetString("platform")
+		if err != nil {
+			log.Fatal(err)
+		}
+		gcState, err := gocart.OpenGoCartState()
+		configs := gcState.Configs
+		for cfgName, cfgLocations := range configs {
+			for cfgPlatform, cfgPath := range cfgLocations.Paths {
+				if strings.Contains(cfgName, name) || cfgPlatform == platform {
+					fmt.Printf("%s: %s [%s]\n", cfgName, cfgPlatform, cfgPath)
+				}
 			}
-			fmt.Println(cfgs)
-		} else {
-			var cfg gocart.ConfigSpec
-			cfg, err = gocart.GetConfigSpec(cfgName)
-			if err != nil {
-				log.Panicf("gocart: could not fetch config", cfgName, "from file", err)
-			}
-			fmt.Println(cfg)
 		}
 	},
 }
@@ -57,6 +57,11 @@ var configGetCmd = &cobra.Command{
 func init() {
 	getCmd.AddCommand(configGetCmd)
 
+	var Name string
+	configGetCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
+
+	var Platform string
+	configGetCmd.Flags().StringVarP(&Platform, "platform", "", "", "platform name")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

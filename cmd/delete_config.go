@@ -19,25 +19,41 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
 )
 
 // configDelCmd represents the configDel command
-var deleteCfgCmd = &cobra.Command{
+var configDelCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Delete a Configuration from the current gocart repo",
 	Long: `Delete a Congig file from the current gocart repo and restore the config file to it's original home
     gocart configDel vimrc`,
-	Args: cobra.ExactArgs(1),
+	Args: cobra.OnlyValidArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		var name string
-		var err error
-		fmt.Println(args)
-		name = strings.Join(args, "")
-		err = gocart.DeleteConfigSpec(name)
+		name, err := cmd.Flags().GetString("name")
+		if err != nil {
+			log.Fatal(err)
+		}
+		platform, err := cmd.Flags().GetString("platform")
+		if err != nil {
+			log.Fatal(err)
+		}
+		gcState, err := gocart.OpenGoCartState()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cfg := gcState.GetConfig(name)
+		delete(cfg.Paths, platform)
+		if platform == gcState.Platform {
+			// Unlink Platform
+			gocart.UnlinkConfig(cfg, gcState.Platform)
+		}
+		if len(cfg.Paths) == 0 {
+			delete(gcState.Configs, platform)
+		}
+		err = gcState.Serialize()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -47,7 +63,17 @@ var deleteCfgCmd = &cobra.Command{
 }
 
 func init() {
-	deleteCmd.AddCommand(deleteCfgCmd)
+	deleteCmd.AddCommand(configDelCmd)
+	var Name string
+	configDelCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
+	configDelCmd.MarkFlagRequired("name")
+
+	var Platform string
+	currentPlatform, err := gocart.GetPlatform()
+	if err != nil {
+		fmt.Println(err)
+	}
+	configDelCmd.Flags().StringVarP(&Platform, "platform", "", currentPlatform, "platform name (overrides current setting)")
 
 	// Here you will define your flags and configuration settings.
 
