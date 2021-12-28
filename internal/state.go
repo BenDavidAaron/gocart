@@ -97,9 +97,10 @@ type ConfigSpec struct {
 	Paths map[string]string
 }
 
-func MakeConfigSpec() {
-	cfg = new(ConfigSpec)
+func MakeConfigSpec() ConfigSpec {
+	cfg := new(ConfigSpec)
 	cfg.Paths = map[string]string{}
+	return *cfg
 }
 
 func (cfg *ConfigSpec) AddPath(platform, path string) {
@@ -109,5 +110,5 @@ func (cfg *ConfigSpec) AddPath(platform, path string) {
 
 func (cfg *ConfigSpec) RemovePath(platform string) {
 	// Remove a Platform Specific path from this config
-	delete(cfg.Paths[platform])
+	delete(cfg.Paths, platform)
 }
