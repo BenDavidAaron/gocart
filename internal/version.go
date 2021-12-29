@@ -3,11 +3,12 @@ package gocart
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 const (
 	versionMajor int = 0
-	versionMinor int = 0
+	versionMinor int = 1
 	versionPatch int = 0
 )
 
@@ -31,14 +32,18 @@ func GetVersionString() string {
 }
 
 func ParseVersionString(v_str string) (gocartVersion, error) {
-	v_chars := strings.split(v_str, ".")
+	v_chars := strings.Split(v_str, ".")
 	v_nums := make([]int, len(v_chars))
+	var err error
 	for i, s := range v_chars {
-		v_nums[i], _ = strconv.Atoi(s)
+		v_nums[i], err = strconv.Atoi(s)
+		if err != nil {
+			return gocartVersion{}, err
+		}
 	}
 	vers := gocartVersion{}
 	vers.Major = v_nums[0]
 	vers.Minor = v_nums[1]
 	vers.Patch = v_nums[2]
-	return vers
+	return vers, nil
 }
