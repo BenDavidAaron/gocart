@@ -1,6 +1,9 @@
 package gocart
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 const (
 	versionMajor int = 0
@@ -25,4 +28,17 @@ func GetVersion() *gocartVersion {
 func GetVersionString() string {
 	v := GetVersion()
 	return fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
+}
+
+func ParseVersionString(v_str string) (gocartVersion, error) {
+	v_chars := strings.split(v_str, ".")
+	v_nums := make([]int, len(v_chars))
+	for i, s := range v_chars {
+		v_nums[i], _ = strconv.Atoi(s)
+	}
+	vers := gocartVersion{}
+	vers.Major = v_nums[0]
+	vers.Minor = v_nums[1]
+	vers.Patch = v_nums[2]
+	return vers
 }
