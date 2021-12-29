@@ -13,17 +13,17 @@ type GoCartState struct {
 	Configs  map[string]ConfigSpec
 	Platform string
 	Path     string
+	Version  string `json:GoCart Version`
 }
 
 func InitGoCartState() (GoCartState, error) {
 	//Create a new gocart repo in the current directory and initialize it with empty state
 	gcState := GoCartState{
-		Path:     "",
-		Configs:  make(map[string]ConfigSpec),
-		Platform: "",
+		Configs: make(map[string]ConfigSpec),
 	}
 	var err error
 	gcState.Path, err = filepath.Abs(MappingFilePath)
+	gcState.Version = GetVersionString()
 	err = gcState.Serialize()
 	return gcState, err
 }
