@@ -19,6 +19,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
@@ -27,16 +28,12 @@ import (
 // configDelCmd represents the configDel command
 var configDelCmd = &cobra.Command{
 	Use:   "config",
-	Short: "Delete a Configuration from the current gocart repo",
-	Long: `Delete a Congig file from the current gocart repo and restore the config file to it's original home
-    gocart configDel vimrc`,
+	Short: "Delete a configuration file and it's metadata from the current gocart repo",
+	Long: `Delete a configuration file and it's metadata from the current gocart repo
+    gocart delete config vimrc`,
 	Args: cobra.OnlyValidArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		name, err := cmd.Flags().GetString("name")
-		if err != nil {
-			log.Fatal(err)
-		}
-		platform, err := cmd.Flags().GetString("platform")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -44,20 +41,16 @@ var configDelCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		cfg := gcState.GetConfig(name)
-		delete(cfg.Paths, platform)
-		if platform == gcState.Platform {
-			// Unlink Platform
-			gocart.UnlinkConfig(cfg, gcState.Platform)
-		}
-		if len(cfg.Paths) == 0 {
-			delete(gcState.Configs, platform)
+		gcState.DeleteConfig(name)
+		err = os.Remove(name)
+		if err != nil {
+			log.Fatal(err)
 		}
 		err = gcState.Serialize()
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("configspec %s removed", name)
+		fmt.Printf("removed config %s, please commit to your VCS\n", name)
 		return
 	},
 }
@@ -65,17 +58,9 @@ var configDelCmd = &cobra.Command{
 func init() {
 	deleteCmd.AddCommand(configDelCmd)
 
-	gcState, err := gocart.OpenGoCartState()
-	if err != nil {
-		log.Print(err)
-	}
-
 	var Name string
 	configDelCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
 	configDelCmd.MarkFlagRequired("name")
-
-	var Platform string
-	configDelCmd.Flags().StringVarP(&Platform, "platform", "", gcState.Platform, "platform name (overrides current setting)")
 
 	// Here you will define your flags and configuration settings.
 
