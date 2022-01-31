@@ -90,25 +90,3 @@ func (gcState *GoCartState) GetPlatform() string {
 func (gcState *GoCartState) SetPlatform(newPlatform string) {
 	gcState.Platform = newPlatform
 }
-
-//Go Cart Configuration Specification
-type ConfigSpec struct {
-	Name  string
-	Paths map[string]string
-}
-
-func MakeConfigSpec() ConfigSpec {
-	cfg := new(ConfigSpec)
-	cfg.Paths = map[string]string{}
-	return *cfg
-}
-
-func (cfg *ConfigSpec) AddPath(platform, path string) {
-	// Add a Platform Specific path to this config
-	cfg.Paths[platform] = path
-}
-
-func (cfg *ConfigSpec) RemovePath(platform string) {
-	// Remove a Platform Specific path from this config
-	delete(cfg.Paths, platform)
-}
