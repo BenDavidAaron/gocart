@@ -82,10 +82,33 @@ func (gcState *GoCartState) DeleteConfig(name string) {
 	delete(gcState.Configs, name)
 }
 
-func (gcState *GoCartState) GetPlatform() string {
-	return gcState.Platform
+func (gcState *GoCartState) PutPlatform(newPlatform string) {
+	gcState.Platforms = append(gcState.Platforms, newPlatform)
 }
 
-func (gcState *GoCartState) SetPlatform(newPlatform string) {
-	gcState.Platform = newPlatform
+func (gcState *GoCartState) GetActivePlatform() string {
+	return gcState.ActivePlatform
+}
+
+func (gcState *GoCartState) GetPlatforms() []string {
+	return gcState.Platforms
+}
+
+func (gcState *GoCartState) SetPlatform(newPlatform string) error {
+	var err error
+	if contains(gcState.Platforms, newPlatform) {
+		fmt.Printf("Gocart SetPlatform: %s not a member of %s", newPlatform, gcState)
+		return err
+	}
+	gcState.ActivePlatform = newPlatform
+	return nil
+}
+
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+	return false
 }
