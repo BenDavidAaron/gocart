@@ -25,15 +25,11 @@ func link(srcName, targetPath string) error {
 
 func unlink(name, targetPath string) error {
 	// Delete the symlink at targetPath,
-	// copy ./name to path
-	ourPath, err := filepath.Abs(targetPath)
-	if err != nil {
-		return err
-	}
-	if !filepath.IsAbs(Path) {
+	var err error
+	if !filepath.IsAbs(targetPath) {
 		return errors.New("gocart: cannot Unlink to a non-absolute path")
 	}
-	err = os.Remove(Path) // Delete the symlink at Path
+	err = os.Remove(targetPath) // Delete the symlink at Path
 	if err != nil {
 		return err
 	}
