@@ -31,12 +31,12 @@ var setPlatformCmd = &cobra.Command{
 	Long: `Set the currently active platform
 	gocart platformSet openbsd  // Sets the platform to openbsd`,
 	Run: func(cmd *cobra.Command, args []string) {
-		gcState, err := gocart.OpenGoCartState()
+		gcState, err := gocart.LoadGoCartState()
 		if err != nil {
 			log.Fatalf("gocart: could not fetch repo state from disk", err)
 		}
-		gcState.Platform = args[0]
-		err = gcState.Serialize()
+		gcState.ActivePlatform = args[0]
+		err = gcState.Save()
 		if err != nil {
 			log.Fatalf("gocart: could not write changed platform to disk", err)
 		}

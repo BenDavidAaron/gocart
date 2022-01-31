@@ -19,6 +19,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
@@ -27,14 +28,14 @@ import (
 // configPutCmd represents the configPut command
 var configPutCmd = &cobra.Command{
 	Use:   "config",
-	Short: "Add a Config File into the current gocart mapping",
-	Long: `Add a Config File into the current gocart mapping
+	Short: "Create a new config file in the gocart repo and track it",
+	Long: `Create a new config gile in the gocart repo and track it.
 
-	this will create a file at the name specified in the gocart repo, 
-	copy the config file at the supplied path into the new file,
-	and then replace the old config file with a symlink to the new config file in the gocart repo
+	this will create a file with the specified name name specified in the gocart 
+	repo, from here it can be edited, and linked to the appropriate location on 
+	your system.
 
-    gocart configPut vimrc ~/.vimrc`,
+    gocart create config vimrc`,
 	Args: cobra.OnlyValidArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("configPut called")
@@ -42,54 +43,35 @@ var configPutCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		path, err := cmd.Flags().GetString("path")
-		if err != nil {
-			log.Fatal(err)
-		}
-		platform, err := cmd.Flags().GetString("platform")
-		if err != nil {
-			log.Fatal(err)
-		}
 
-		gcState, err := gocart.OpenGoCartState()
+		gcState, err := gocart.LoadGoCartState()
 		if err != nil {
 			log.Panicf("gocart: unable to load application data from disk", err)
 		}
 		var cfg gocart.ConfigSpec
 		if cfg, ok := gcState.Configs[name]; ok {
-			cfg.AddPath(platform, path)
+			fmt.Printf("%s is already present in this repo, exiting")
+			return
 		} else {
-			cfg := gocart.MakeConfigSpec()
+			cfg.Init()
 			cfg.Name = name
-			cfg.AddPath(platform, path)
+			os.OpenFile(name, os.O_RDONLY|os.O_CREATE, 0666)
 		}
-		gcState.Configs[cfg.Name] = cfg
-		err = gcState.Serialize()
+		gcState.PutConfig(cfg)
+		err = gcState.Save()
 		if err != nil {
 			log.Panicf("gocart: unable to write config to disk", err)
 		}
-		fmt.Println("Saved %s : %s [%s]", cfg.Name, cfg.Paths[platform], platform)
+		fmt.Printf("Saved %s to gocart\n", cfg.Name)
 	},
 }
 
 func init() {
 	addCmd.AddCommand(configPutCmd)
 
-	gcState, err := gocart.OpenGoCartState()
-	if err != nil {
-		log.Print(err)
-	}
-
 	var Name string
 	configPutCmd.Flags().StringVarP(&Name, "name", "n", "", "config file name")
 	configPutCmd.MarkFlagRequired("name")
-
-	var Path string
-	configPutCmd.Flags().StringVarP(&Path, "path", "p", "", "config file originial path")
-	configPutCmd.MarkFlagRequired("path")
-
-	var Platform string
-	configPutCmd.Flags().StringVarP(&Platform, "platform", "", gcState.Platform, "platform name (overrides current setting)")
 
 	// Here you will define your flags and configuration settings.
 
