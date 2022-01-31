@@ -83,6 +83,11 @@ func (gcState *GoCartState) GetConfigs() map[string]ConfigSpec {
 	return gcState.Configs
 }
 
+func (gcState *GoCartState) DeleteConfig(name string) {
+	// Delete a config spec from the gocart repo
+	delete(gcState.Configs, name)
+}
+
 func (gcState *GoCartState) GetPlatform() string {
 	return gcState.Platform
 }
