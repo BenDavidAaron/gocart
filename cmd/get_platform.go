@@ -31,11 +31,11 @@ var getPlatformCmd = &cobra.Command{
 	Long: `Get the name of the currently selected platform (BSD, Linux, OSX)
     cobra platformGet  // bsd`,
 	Run: func(cmd *cobra.Command, args []string) {
-		gcState, err := gocart.OpenGoCartState()
+		gcState, err := gocart.LoadGoCartState()
 		if err != nil {
 			log.Fatal("gocart: failed to read repo state from disk", err)
 		}
-		fmt.Println(gcState.Platform)
+		fmt.Println(gcState.ActivePlatform)
 	},
 }
 

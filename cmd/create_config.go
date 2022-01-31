@@ -19,6 +19,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 
 	gocart "github.com/BenDavidAaron/gocart/internal"
 	"github.com/spf13/cobra"
@@ -43,7 +44,7 @@ var configPutCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		gcState, err := gocart.OpenGoCartState()
+		gcState, err := gocart.LoadGoCartState()
 		if err != nil {
 			log.Panicf("gocart: unable to load application data from disk", err)
 		}
@@ -54,10 +55,10 @@ var configPutCmd = &cobra.Command{
 		} else {
 			cfg.Init()
 			cfg.Name = name
-			os.Touch(name)
+			os.OpenFile(name, os.O_RDONLY|os.O_CREATE, 0666)
 		}
 		gcState.PutConfig(cfg)
-		err = gcState.Serialize()
+		err = gcState.Save()
 		if err != nil {
 			log.Panicf("gocart: unable to write config to disk", err)
 		}

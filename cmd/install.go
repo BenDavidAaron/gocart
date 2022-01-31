@@ -30,14 +30,14 @@ var repoInstallCmd = &cobra.Command{
 	Long: `Insert a symlink for each config in the current gocart repo
 	pointing from each config's ./name to it's path on your system`,
 	Run: func(cmd *cobra.Command, args []string) {
-		gcState, err := gocart.OpenGoCartState()
+		gcState, err := gocart.LoadGoCartState()
 		if err != nil {
 			log.Fatal(err)
 		}
 		for _, cfg := range gcState.Configs {
-			if _, ok := cfg.Paths[gcState.Platform]; ok {
-				log.Printf("Linking %s to %s\n", cfg.Name, cfg.Paths[gcState.Platform])
-				gocart.InsertConfig(cfg, gcState.Platform)
+			if _, ok := cfg.Paths[gcState.ActivePlatform]; ok {
+				log.Printf("Linking %s to %s\n", cfg.Name, cfg.Paths[gcState.ActivePlatform])
+				cfg.Link(gcState.ActivePlatform)
 			}
 		}
 		log.Printf("Installed configs from workdir and .gocart.json")

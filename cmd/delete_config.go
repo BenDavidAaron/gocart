@@ -37,7 +37,7 @@ var configDelCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		gcState, err := gocart.OpenGoCartState()
+		gcState, err := gocart.LoadGoCartState()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -46,7 +46,7 @@ var configDelCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = gcState.Serialize()
+		err = gcState.Save()
 		if err != nil {
 			log.Fatal(err)
 		}

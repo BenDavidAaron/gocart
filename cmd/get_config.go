@@ -42,7 +42,7 @@ var configGetCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		gcState, err := gocart.OpenGoCartState()
+		gcState, err := gocart.LoadGoCartState()
 		configs := gcState.Configs
 		for cfgName, cfgLocations := range configs {
 			for cfgPlatform, cfgPath := range cfgLocations.Paths {
