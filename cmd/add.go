@@ -22,11 +22,11 @@ import (
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
-	Use:   "add",
+	Use:   "create",
 	Short: "Add a new object to the current gocart repo",
-	Long: `Add a new configuration file or linkage to the current gocart repo
+	Long: `Add a new configuration file or platform to the current gocart repo
 	This will record new objects in ./.gocart.json
-	You should track newly changes to your gocart repo with git VCS`,
+	You should track newly changes to your gocart repo with git or another VCS`,
 	Run: func(cmd *cobra.Command, args []string) {},
 }
 
