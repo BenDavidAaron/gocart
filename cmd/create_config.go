@@ -54,6 +54,7 @@ var configPutCmd = &cobra.Command{
 		} else {
 			cfg.Init()
 			cfg.Name = name
+			os.Touch(name)
 		}
 		gcState.PutConfig(cfg)
 		err = gcState.Serialize()
