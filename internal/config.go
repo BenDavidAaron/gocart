@@ -6,10 +6,9 @@ type ConfigSpec struct {
 	Paths map[string]string
 }
 
-func MakeConfigSpec() ConfigSpec {
-	cfg := new(ConfigSpec)
+func (cfg *ConfigSpec) Init() {
+	cfg.Name = ""
 	cfg.Paths = map[string]string{}
-	return *cfg
 }
 
 func (cfg *ConfigSpec) AddPath(platform, path string) {
