@@ -2,72 +2,66 @@ package gocart
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 )
 
-const MappingFilePath string = "./.gocart.json"
+const MappingFilePath string = "./gocart.json"
 
 //Go Cart Application State
 type GoCartState struct {
-	Configs  map[string]ConfigSpec
-	Platform string
-	Path     string
-	Version  string `json:GoCart Version`
+	Configs        map[string]ConfigSpec
+	ActivePlatform string
+	Platforms      []string
+	Version        string
 }
 
-func InitGoCartState() (GoCartState, error) {
+func NewGoCartState() *GoCartState {
 	//Create a new gocart repo in the current directory and initialize it with empty state
-	gcState := GoCartState{
-		Configs: make(map[string]ConfigSpec),
-	}
-	var err error
-	gcState.Path, err = filepath.Abs(MappingFilePath)
-	gcState.Version = GetVersionString()
-	err = gcState.Serialize()
-	return gcState, err
+	gcState := new(GoCartState)
+	gcState.instantiate()
+	return gcState
 }
 
-func OpenGoCartState() (GoCartState, error) {
+func (gcState *GoCartState) instantiate() {
+	if gcState.Configs == nil {
+		gcState.Configs = make(map[string]ConfigSpec)
+	}
+	if gcState.Platforms == nil {
+		gcState.Platforms = make([]string, 0)
+	}
+	if gcState.Version == "" {
+		gcState.Version = GetVersionString()
+	}
+}
+
+func LoadGoCartState() (GoCartState, error) {
 	// Load the gocart repo in the current directory and return it
 	var gcState GoCartState
-	var err error
-	gcState.Path, err = filepath.Abs(MappingFilePath)
+	gcFile, err := ioutil.ReadFile(MappingFilePath)
 	if err != nil {
 		return gcState, err
 	}
-	gcState, err = gcState.Deserialize()
-	return gcState, err
+	err = json.Unmarshal([]byte(gcFile), &gcState)
+	if err != nil {
+		return gcState, err
+	}
+	gcState.instantiate()
+	return gcState, nil
 }
 
-func (gcState *GoCartState) Serialize() error {
-	// Read the file at ./.gocart.json and load it's platform name and configs into memory
+func (gcState *GoCartState) Save() error {
 	stateData, err := json.Marshal(gcState)
+	path, err := filepath.Abs(MappingFilePath)
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(gcState.Path, stateData, 0640)
+	err = ioutil.WriteFile(path, stateData, 0640)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func (gcStore *GoCartState) Deserialize() (GoCartState, error) {
-	// Save the configs and platform name in memory to a file at ./.gocart.json
-	var state GoCartState
-	kvFile, err := ioutil.ReadFile(MappingFilePath)
-	if err != nil {
-		return state, err
-	}
-	err = json.Unmarshal([]byte(kvFile), &state)
-	if err != nil {
-		return state, err
-	}
-	if state.Configs == nil {
-		state.Configs = make(map[string]ConfigSpec)
-	}
-	return state, nil
 }
 
 func (gcState *GoCartState) PutConfig(cfg ConfigSpec) {
